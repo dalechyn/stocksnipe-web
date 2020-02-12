@@ -1,0 +1,22 @@
+.auth-page {
+  display: flex;
+  flex-flow: column;
+  min-height: 100vh;
+
+  .auth-form {
+    flex-shrink: 0;
+  }
+
+  .filler {
+    min-height: 30px;
+    height: 24px;
+    &.up {
+
+      flex-grow: 1;
+    }
+    &.down {
+
+      flex-grow: 2;
+    }
+  }
+}
