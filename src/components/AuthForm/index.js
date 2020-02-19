@@ -1,18 +1,18 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import { useForm } from 'react-hook-form'
 import { Form, FormGroup, Label, Button, Input } from 'reactstrap'
-import { connect } from 'react-redux'
-import { history } from '../../helpers'
-import { bindActionCreators } from 'redux'
+import PropTypes from 'prop-types'
 
+import { history } from '../../helpers'
 import { alertActions, userActions } from '../../actions'
 
 import './styles.scss'
 
 const AuthForm = ({ alert, clear, logout, login }) => {
 	logout()
-	const { authRef, handleSubmit } = useForm()
+	const { register, handleSubmit } = useForm()
 
 	const onSubmit = ({ email, password }) => login(email, password)
 
@@ -23,17 +23,22 @@ const AuthForm = ({ alert, clear, logout, login }) => {
 
 	return (
 		<div className='AuthForm'>
-			{alert.message && <div className={`alert ${alert.type}`}>{alert.message}</div>}
+			{/* {alert.message && <div className={`alert ${alert.type}`}>{alert.message}</div>} */}
 			<Form className='AuthForm-content' onSubmit={handleSubmit(onSubmit)}>
 				<FormGroup>
 					<Label for='inputEmail'>Email</Label>
-					<Input type='email' innerRef={authRef} name='email' placeholder='Enter Email' />
+					<Input
+						type='email'
+						innerRef={register}
+						name='email'
+						placeholder='Enter Email'
+					/>
 				</FormGroup>
 				<FormGroup>
 					<Label for='inputPass'>Password</Label>
 					<Input
 						type='password'
-						innerRef={authRef}
+						innerRef={register}
 						name='password'
 						placeholder='Password'
 					/>
@@ -42,7 +47,7 @@ const AuthForm = ({ alert, clear, logout, login }) => {
 					<Label check>
 						<Input
 							type='checkbox'
-							innerRef={authRef}
+							innerRef={register}
 							name='remember'
 							id='forgotCheckBox'
 						/>
