@@ -1,0 +1,15 @@
+.login-form {
+  display: flex;
+  flex-flow: column;
+    margin: auto;
+    padding: 20px;
+    width: 450px;
+
+  .form-footer {
+    display: flex;
+    justify-content: space-between;
+    .register-holder {
+      display: flex;
+    }
+  }
+}

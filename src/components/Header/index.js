@@ -1,13 +1,6 @@
 import React, { useState } from 'react'
-import {
-	Navbar,
-	NavbarToggler,
-	Nav,
-	Collapse,
-	NavItem,
-	Button,
-	NavLink
-} from 'reactstrap'
+import { Link } from 'react-router-dom'
+import { Navbar, NavbarToggler, Nav, Collapse, NavItem, Button } from 'reactstrap'
 import './styles.scss'
 
 const Header = () => {
@@ -18,22 +11,22 @@ const Header = () => {
 	return (
 		<section className='SSHeader'>
 			<Navbar color='light' light expand='md'>
-				<a
-					href='/'
+				<Link
+					to='/'
 					className='position-absolute align-self-start align-self-md-center SSLogo'
 				>
 					{/* TEMPORARY TEXT SHOULD BE REPLACED BY LOGO */}
 					<h2>StockSnipe</h2>
-				</a>
+				</Link>
 				<NavbarToggler className='ml-auto' onClick={toggle} />
 				<Collapse className='flex-row-reverse' isOpen={isOpen} navbar>
 					<Nav className='ml-auto' navbar>
 						<NavItem>
-							<NavLink href='/signin'>
+							<Link to='/signin'>
 								<Button color='primary' className='w-100'>
 									Sign In
 								</Button>
-							</NavLink>
+							</Link>
 						</NavItem>
 					</Nav>
 				</Collapse>

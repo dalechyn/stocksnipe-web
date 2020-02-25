@@ -1,14 +1,13 @@
 import config from '../config/default'
 import { authHeader } from '../helpers'
 
-const login = (email, password) => {
+const login = (userLogin, userPassword) => {
 	const requestOptions = {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-
-		body: JSON.stringify({ email, password })
+		body: JSON.stringify({ userLogin, userPassword })
 	}
 
 	return fetch(`${config.api.url}/users/authenticate`, requestOptions)
@@ -37,7 +36,7 @@ const getAll = () => {
 
 const handleResponse = response =>
 	response.text().then(text => {
-		/* const data = text && JSON.parse(text)
+		const data = text && JSON.parse(text)
 		if (!response.ok) {
 			if (response.status === 401) {
 				// auto logout if 401 response returned from api
@@ -49,8 +48,7 @@ const handleResponse = response =>
 			return Promise.reject(error)
 		}
 
-		return data */
-		return text
+		return data
 	})
 
 export const usersService = {
