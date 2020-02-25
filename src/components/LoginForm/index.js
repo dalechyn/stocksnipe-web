@@ -39,6 +39,7 @@ const LoginForm = ({ alert, clearAlert, loginAction }) => {
 						control={control}
 						as={<TextField />}
 						name='inputLogin'
+						label='Login'
 						rules={{ required: 'Please fill out the Login' }}
 						variant='outlined'
 						error={!!errors.inputLogin}
@@ -51,6 +52,7 @@ const LoginForm = ({ alert, clearAlert, loginAction }) => {
 						control={control}
 						as={<TextField />}
 						name='inputPassword'
+						label='Password'
 						type='password'
 						rules={{ required: 'Please fill out the Password' }}
 						variant='outlined'
