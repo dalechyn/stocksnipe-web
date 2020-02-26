@@ -1,4 +1,6 @@
-export function createConstants(...constants) {
+import decode from 'jwt-decode'
+
+export const createConstants = (...constants) => {
 	let i = 0
 	return constants.reduce((acc, constant) => {
 		acc[constant] = i
@@ -7,24 +9,32 @@ export function createConstants(...constants) {
 	}, {})
 }
 
-export function createReducer(initialState, reducerMap) {
-	return (state = initialState, action) => {
-		const reducer = reducerMap[action.type]
-
-		return reducer ? reducer(state, action.payload) : state
-	}
+export const createReducer = (initialState, reducerMap) => (
+	state = initialState,
+	action
+) => {
+	const reducer = reducerMap[action.type]
+	return reducer ? reducer(state, action.payload) : state
 }
 
-export function checkHttpStatus(response) {
-	if (response.status >= 200 && response.status < 300) {
-		return response
-	} else {
-		const error = new Error(response.statusText)
-		error.response = response
-		throw error
-	}
-}
+export const parseJSON = response => response.json()
 
-export function parseJSON(response) {
-	return response.json()
+export const checkAuth = () => {
+	const token = localStorage.getItem('token')
+	const refreshToken = localStorage.getItem('refreshToken')
+
+	if (!token || !refreshToken) {
+		return false
+	}
+
+	try {
+		const { exp } = decode(refreshToken)
+		if (exp < new Date().getTime() / 1000) {
+			return false
+		}
+	} catch (e) {
+		return false
+	}
+
+	return true
 }

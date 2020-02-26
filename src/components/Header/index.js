@@ -22,9 +22,9 @@ const Header = () => {
 				<Collapse className='flex-row-reverse' isOpen={isOpen} navbar>
 					<Nav className='ml-auto' navbar>
 						<NavItem>
-							<Link to='/signin'>
+							<Link to='/login'>
 								<Button color='primary' className='w-100'>
-									Sign In
+									Log in
 								</Button>
 							</Link>
 						</NavItem>

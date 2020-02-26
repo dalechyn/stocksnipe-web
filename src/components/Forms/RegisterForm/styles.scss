@@ -1,4 +1,4 @@
-.login-form {
+.register-form {
   display: flex;
   flex-flow: column;
     margin: auto;
@@ -7,8 +7,8 @@
 
   .form-footer {
     display: flex;
-    justify-content: space-between;
-    .register-holder {
+    justify-content: center;
+    .login-holder {
       display: flex;
     }
   }

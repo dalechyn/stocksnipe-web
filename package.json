@@ -4,11 +4,14 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.9.4",
+    "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.44",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
+    "babel-eslint": "^10.0.3",
     "bootstrap": "^4.4.1",
+    "clsx": "^1.1.0",
     "config": "^3.2.5",
     "history": "^4.10.1",
     "html-webpack-plugin": "^3.2.0",
@@ -24,7 +27,6 @@
     "react-scripts": "3.3.0",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
-    "redux-router": "^2.1.2",
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
@@ -52,15 +54,19 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
+    "eslint-config-react-app": "^5.2.0",
     "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-flowtype": "^4.6.0",
     "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.18.3",
+    "eslint-plugin-react-hooks": "^2.4.0",
     "eslint-plugin-standard": "^4.0.1",
     "prettier": "^1.19.1",
     "reactstrap": "^8.4.1",
-    "scheduler": "^0.18.0",
     "webpack": "^4.41.2",
     "webpack-dev-server": "^3.9.0"
   }

@@ -3,13 +3,11 @@ import { usersService } from '../services'
 import { alertActions } from './'
 import { history } from '../helpers'
 
-export const userActions = {
-	login,
-	logout,
-	getAll
-}
+const login = (username, password) => {
+	const request = user => ({ type: userConstants.LOGIN_REQUEST, user })
+	const success = user => ({ type: userConstants.LOGIN_SUCCESS, user })
+	const failure = error => ({ type: userConstants.LOGIN_FAILURE, error })
 
-function login(username, password) {
 	return dispatch => {
 		dispatch(request({ username }))
 
@@ -24,24 +22,17 @@ function login(username, password) {
 			}
 		)
 	}
-
-	function request(user) {
-		return { type: userConstants.LOGIN_REQUEST, user }
-	}
-	function success(user) {
-		return { type: userConstants.LOGIN_SUCCESS, user }
-	}
-	function failure(error) {
-		return { type: userConstants.LOGIN_FAILURE, error }
-	}
 }
 
-function logout() {
+const logout = () => {
 	usersService.logout()
 	return { type: userConstants.LOGOUT }
 }
 
-function getAll() {
+const getAll = () => {
+	const request = () => ({ type: userConstants.GETALL_REQUEST })
+	const success = users => ({ type: userConstants.GETALL_SUCCESS, users })
+	const failure = error => ({ type: userConstants.GETALL_FAILURE, error })
 	return dispatch => {
 		dispatch(request())
 
@@ -50,14 +41,27 @@ function getAll() {
 			error => dispatch(failure(error))
 		)
 	}
+}
 
-	function request() {
-		return { type: userConstants.GETALL_REQUEST }
+const register = (email, username, password) => {
+	const request = user => ({ type: userConstants.REGISTER_REQUEST, user })
+	const success = user => ({ type: userConstants.REGISTER_SUCCESS, user })
+	const failure = error => ({ type: userConstants.REGISTER_FAILURE, error })
+
+	return dispatch => {
+		dispatch(request({ email, username, password }))
+
+		usersService.register(email, username, password).then(
+			user => dispatch(success(user)),
+			error => dispatch(failure(error))
+		)
 	}
-	function success(users) {
-		return { type: userConstants.GETALL_SUCCESS, users }
-	}
-	function failure(error) {
-		return { type: userConstants.GETALL_FAILURE, error }
-	}
+}
+
+export const userActions = {
+	login,
+	logout,
+	register,
+
+	getAll
 }
