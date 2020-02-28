@@ -2,19 +2,38 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { useForm, Controller } from 'react-hook-form'
-import { Form, FormGroup } from 'reactstrap'
-import { TextField, Checkbox, Button, Paper } from '@material-ui/core'
-import { MUIRouterLink, MUIPasswordField } from '../../MUIComponents'
+import { TextField, Container, Button, Paper, Box, makeStyles } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import PropTypes from 'prop-types'
 
 import { history } from '../../../helpers'
+import { MUIRouterLink, MUIPasswordField, MUILabeledCheckbox } from '../../MUIComponents'
 import { alertActions, userActions } from '../../../actions'
 
-import './styles.scss'
 import { passValidate } from '../utils'
 
-const LoginForm = ({ alert, clearAlert, loginAction }) => {
+const useStyles = makeStyles(theme => ({
+	footer: {
+		display: 'flex',
+		justifyContent: 'space-between',
+		[theme.breakpoints.down('xs')]: {
+			flexFlow: 'column',
+			alignItems: 'center'
+		}
+	},
+	registerHolder: {
+		display: 'flex'
+	},
+	formGroup: {
+		marginBottom: theme.spacing(2)
+	},
+	progress: {
+		padding: '-20px'
+	}
+}))
+
+const LoginForm = ({ className, alert, clearAlert, loginAction, authentication }) => {
+	const classes = useStyles()
 	const { handleSubmit, control, errors } = useForm({
 		defaultValues: {
 			inputLogin: '',
@@ -32,10 +51,16 @@ const LoginForm = ({ alert, clearAlert, loginAction }) => {
 	})
 
 	return (
-		<Paper elevation={3} className='login-form'>
-			<Form noValidate onSubmit={handleSubmit(onSubmit)}>
+		<Container component={Paper} className={className} disableGutters maxWidth='xs'>
+			<Container
+				disableGutters
+				maxWidth='sm'
+				component='form'
+				noValidate
+				onSubmit={handleSubmit(onSubmit)}
+			>
 				{alert.message && <Alert severity={alert.type}>{alert.message}</Alert>}
-				<FormGroup>
+				<Box className={classes.formGroup}>
 					<Controller
 						control={control}
 						as={TextField}
@@ -49,8 +74,8 @@ const LoginForm = ({ alert, clearAlert, loginAction }) => {
 						helperText={errors.inputLogin && errors.inputLogin.message}
 						fullWidth
 					/>
-				</FormGroup>
-				<FormGroup>
+				</Box>
+				<Box className={classes.formGroup}>
 					<Controller
 						control={control}
 						as={MUIPasswordField}
@@ -63,50 +88,52 @@ const LoginForm = ({ alert, clearAlert, loginAction }) => {
 						helperText={errors.inputPassword && errors.inputPassword.message}
 						fullWidth
 					/>
-				</FormGroup>
-				<FormGroup>
+				</Box>
+				<Box className={classes.formGroup}>
 					<Controller
 						control={control}
-						as={Checkbox}
+						as={MUILabeledCheckbox}
 						name='checkboxRemember'
 						color='primary'
+						label='Remember Me'
 					/>
-					<label>Remember Me</label>
-				</FormGroup>
-				<FormGroup>
+				</Box>
+				<Box className={classes.formGroup}>
 					<Button type='submit' size='large' variant='outlined' color='primary' fullWidth>
 						LOG IN
 					</Button>
-				</FormGroup>
-			</Form>
-			<FormGroup>
-				<div className='form-footer'>
+				</Box>
+			</Container>
+			<Container disableGutters>
+				<div className={classes.footer}>
 					<MUIRouterLink color='primary' to='/forgot'>
 						Forgot password?
 					</MUIRouterLink>
-					<div className='register-holder'>
+					<div className={classes.registerHolder}>
 						<div className='register-text'>Not registered?&nbsp;</div>
 						<MUIRouterLink color='primary' to='/register'>
 							Register
 						</MUIRouterLink>
 					</div>
 				</div>
-			</FormGroup>
-		</Paper>
+			</Container>
+		</Container>
 	)
 }
 
 LoginForm.propTypes = {
+	className: PropTypes.string,
 	alert: PropTypes.shape({
 		message: PropTypes.object,
 		type: PropTypes.string
 	}),
 	clearAlert: PropTypes.func,
 	loginAction: PropTypes.func,
-	logoutAction: PropTypes.func
+	logoutAction: PropTypes.func,
+	authentication: PropTypes.object
 }
 
-const mapStateToProps = ({ alert, loggingIn }) => ({ alert, loggingIn })
+const mapStateToProps = ({ alert, authentication }) => ({ alert, authentication })
 
 const mapDispatchToProps = dispatch =>
 	bindActionCreators(

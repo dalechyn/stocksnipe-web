@@ -3,7 +3,7 @@ import { Link as MUILink } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
-const MUIRouterLink = ({ className, children, to, ...otherProps }) => {
+const MUIRouterLink = ({ className, children, to, ...props }) => {
 	return (
 		<MUILink
 			className={className}
@@ -12,7 +12,7 @@ const MUIRouterLink = ({ className, children, to, ...otherProps }) => {
 				() => forwardRef((linkProps, ref) => <Link ref={ref} to={to} {...linkProps} />),
 				[to]
 			)}
-			{...otherProps}
+			{...props}
 		>
 			{children}
 		</MUILink>

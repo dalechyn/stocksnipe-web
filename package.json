@@ -10,14 +10,9 @@
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
     "babel-eslint": "^10.0.3",
-    "bootstrap": "^4.4.1",
-    "clsx": "^1.1.0",
-    "config": "^3.2.5",
+    "classnames": "^2.2.6",
     "history": "^4.10.1",
-    "html-webpack-plugin": "^3.2.0",
     "jwt-decode": "^2.2.0",
-    "material-kit-react": "^1.8.0",
-    "node-sass": "^4.13.1",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -66,7 +61,6 @@
     "eslint-plugin-react-hooks": "^2.4.0",
     "eslint-plugin-standard": "^4.0.1",
     "prettier": "^1.19.1",
-    "reactstrap": "^8.4.1",
     "webpack": "^4.41.2",
     "webpack-dev-server": "^3.9.0"
   }

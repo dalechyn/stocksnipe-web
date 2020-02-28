@@ -2,8 +2,7 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { useForm, Controller } from 'react-hook-form'
-import { Form, FormGroup } from 'reactstrap'
-import { TextField, Button, Paper } from '@material-ui/core'
+import { Box, TextField, Button, Paper, makeStyles, Container } from '@material-ui/core'
 import { MUIRouterLink, MUIPasswordField } from '../../MUIComponents'
 import { Alert } from '@material-ui/lab'
 import PropTypes from 'prop-types'
@@ -12,13 +11,25 @@ import { history } from '../../../helpers'
 import { alertActions, userActions } from '../../../actions'
 import { passValidate } from '../utils'
 
-import './styles.scss'
-
 // eslint is mad on email regexps :P
 // eslint-disable-next-line no-useless-escape
 const emailRegExp = /^(?:(?:[^<>()\[\]\\.,;:\s@"]+(?:\.[^<>()\[\]\\.,;:\s@"]+)*)|(?:".+"))@(?:(?:\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(?:(?:[a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-const RegisterForm = ({ alert, clearAlert, registerAction }) => {
+const useStyles = makeStyles(theme => ({
+	footer: {
+		display: 'flex',
+		justifyContent: 'center',
+		[theme.breakpoints.down('xs')]: { flexFlow: 'column', alignItems: 'center' }
+	},
+	loginText: {
+		flexGrow: 1
+	},
+	formGroup: { marginBottom: theme.spacing(2) }
+}))
+
+const RegisterForm = ({ className, alert, clearAlert, registerAction }) => {
+	const classes = useStyles()
+
 	const { handleSubmit, control, errors, watch } = useForm({
 		defaultValues: {
 			inputEmail: '',
@@ -37,10 +48,15 @@ const RegisterForm = ({ alert, clearAlert, registerAction }) => {
 	})
 
 	return (
-		<Paper elevation={3} className='register-form'>
-			<Form noValidate onSubmit={handleSubmit(onSubmit)}>
+		<Container component={Paper} className={className} disableGutters maxWidth='xs'>
+			<Container
+				disableGutters
+				component='form'
+				noValidate
+				onSubmit={handleSubmit(onSubmit)}
+			>
 				{alert.message && <Alert severity={alert.type}>{alert.message}</Alert>}
-				<FormGroup>
+				<Box className={classes.formGroup}>
 					<Controller
 						control={control}
 						as={TextField}
@@ -56,8 +72,8 @@ const RegisterForm = ({ alert, clearAlert, registerAction }) => {
 						helperText={errors.inputEmail && errors.inputEmail.message}
 						fullWidth
 					/>
-				</FormGroup>
-				<FormGroup>
+				</Box>
+				<Box className={classes.formGroup}>
 					<Controller
 						control={control}
 						as={TextField}
@@ -69,8 +85,8 @@ const RegisterForm = ({ alert, clearAlert, registerAction }) => {
 						helperText={errors.inputLogin && errors.inputLogin.message}
 						fullWidth
 					/>
-				</FormGroup>
-				<FormGroup>
+				</Box>
+				<Box className={classes.formGroup}>
 					<Controller
 						control={control}
 						as={MUIPasswordField}
@@ -82,8 +98,8 @@ const RegisterForm = ({ alert, clearAlert, registerAction }) => {
 						helperText={errors.inputPassword && errors.inputPassword.message}
 						fullWidth
 					/>
-				</FormGroup>
-				<FormGroup>
+				</Box>
+				<Box className={classes.formGroup}>
 					<Controller
 						control={control}
 						as={MUIPasswordField}
@@ -100,26 +116,27 @@ const RegisterForm = ({ alert, clearAlert, registerAction }) => {
 						}
 						fullWidth
 					/>
-				</FormGroup>
-				<FormGroup>
+				</Box>
+				<Box className={classes.formGroup}>
 					<Button type='submit' size='large' variant='outlined' color='primary' fullWidth>
 						Register
 					</Button>
-				</FormGroup>
-			</Form>
-			<FormGroup>
-				<div className='form-footer'>
-					<div className='login-text'>Already registered?&nbsp;</div>
+				</Box>
+			</Container>
+			<Box className={classes.formGroup}>
+				<div className={classes.footer}>
+					<Box>Already registered?&nbsp;</Box>
 					<MUIRouterLink color='primary' to='/login'>
 						Log In
 					</MUIRouterLink>
 				</div>
-			</FormGroup>
-		</Paper>
+			</Box>
+		</Container>
 	)
 }
 
 RegisterForm.propTypes = {
+	className: PropTypes.string,
 	alert: PropTypes.shape({
 		message: PropTypes.object,
 		type: PropTypes.string

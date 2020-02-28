@@ -9,9 +9,9 @@ import {
 } from '@material-ui/core'
 import PropTypes from 'prop-types'
 
-import Header from '../components/Header'
-import Main from '../pages/Main'
-import { history } from '../helpers'
+import Header from '../Header'
+import Main from '../../pages/Main'
+import { history } from '../../helpers'
 
 const Root = props => {
 	const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
@@ -28,8 +28,8 @@ const Root = props => {
 
 	return (
 		<Provider store={props.store}>
-			<CssBaseline />
 			<ThemeProvider theme={theme}>
+				<CssBaseline />
 				<Router history={history}>
 					<Header />
 					<Main />

@@ -1,37 +1,42 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { Navbar, NavbarToggler, Nav, Collapse, NavItem, Button } from 'reactstrap'
-import './styles.scss'
+import { AppBar, Box, Toolbar, Button, Typography, makeStyles } from '@material-ui/core'
+
+const useStyles = makeStyles(theme => ({
+	leftContent: {
+		flexGrow: 1
+	},
+	register: {
+		marginRight: theme.spacing(2)
+	}
+}))
 
 const Header = () => {
-	const [isOpen, setIsOpen] = useState(false)
-
-	const toggle = () => setIsOpen(!isOpen)
+	const classes = useStyles()
 
 	return (
-		<section className='SSHeader'>
-			<Navbar color='light' light expand='md'>
-				<Link
-					to='/'
-					className='position-absolute align-self-start align-self-md-center SSLogo'
+		<AppBar position='static'>
+			<Toolbar>
+				{/* This should be replaced by logo */}
+				<Box className={classes.leftContent}>
+					<Typography className={classes.logo} variant='h6'>
+						StockSnipe
+					</Typography>
+				</Box>
+				<Button
+					className={classes.register}
+					variant='contained'
+					color='secondary'
+					component={Link}
+					to='/register'
 				>
-					{/* TEMPORARY TEXT SHOULD BE REPLACED BY LOGO */}
-					<h2>StockSnipe</h2>
-				</Link>
-				<NavbarToggler className='ml-auto' onClick={toggle} />
-				<Collapse className='flex-row-reverse' isOpen={isOpen} navbar>
-					<Nav className='ml-auto' navbar>
-						<NavItem>
-							<Link to='/login'>
-								<Button color='primary' className='w-100'>
-									Log in
-								</Button>
-							</Link>
-						</NavItem>
-					</Nav>
-				</Collapse>
-			</Navbar>
-		</section>
+					Register
+				</Button>
+				<Button variant='contained' color='primary' component={Link} to='/login'>
+					Log in
+				</Button>
+			</Toolbar>
+		</AppBar>
 	)
 }
 

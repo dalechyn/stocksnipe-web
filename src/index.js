@@ -1,12 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import Root from './containers/Root'
+import Root from './components/Root/Root'
 import * as serviceWorker from './serviceWorker'
 import { store } from './helpers'
-
-import './index.css'
-import './bootstrap.scss'
 
 ReactDOM.render(<Root store={store} />, document.getElementById('root'))
 
