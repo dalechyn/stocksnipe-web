@@ -3,7 +3,7 @@ import { Container, Typography } from '@material-ui/core'
 
 const Home = () => (
 	<Container>
-		<Typography variant='h1'>StockSnipe!</Typography>
+		<Typography variant='h6'>StockSnipe!</Typography>
 	</Container>
 )
 

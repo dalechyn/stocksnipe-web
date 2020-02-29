@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const LoginForm = ({ className, alert, clearAlert, loginAction, authentication }) => {
+const LoginForm = ({ className, alert, clearAlert, loginAction }) => {
 	const classes = useStyles()
 	const { handleSubmit, control, errors } = useForm({
 		defaultValues: {
@@ -129,17 +129,15 @@ LoginForm.propTypes = {
 	}),
 	clearAlert: PropTypes.func,
 	loginAction: PropTypes.func,
-	logoutAction: PropTypes.func,
 	authentication: PropTypes.object
 }
 
-const mapStateToProps = ({ alert, authentication }) => ({ alert, authentication })
+const mapStateToProps = ({ alert }) => ({ alert })
 
 const mapDispatchToProps = dispatch =>
 	bindActionCreators(
 		{
 			clearAlert: alertActions.clear,
-			logoutAction: userActions.logout,
 			loginAction: userActions.login
 		},
 		dispatch

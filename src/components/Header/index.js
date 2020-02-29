@@ -1,4 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import {
 	AppBar,
@@ -14,6 +17,7 @@ import {
 } from '@material-ui/core'
 import { Menu as MenuIcon } from '@material-ui/icons'
 import cn from 'classnames'
+import { userActions } from '../../actions'
 
 const useStyles = makeStyles(theme => ({
 	leftContent: {
@@ -36,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const Header = () => {
+const Header = ({ authentication, logoutAction }) => {
 	const classes = useStyles()
 	const [collapsed, setCollapsed] = React.useState(false)
 
@@ -61,49 +65,81 @@ const Header = () => {
 						<MenuIcon />
 					</IconButton>
 				</Hidden>
+
 				<Hidden xsDown>
-					<Button
-						className={cn(classes.register, classes.buttons)}
-						variant='contained'
-						color='secondary'
-						component={Link}
-						to='/register'
-					>
-						Register
-					</Button>
-					<Button
-						className={classes.buttons}
-						variant='outlined'
-						color='inherit'
-						component={Link}
-						to='/login'
-					>
-						Log in
-					</Button>
+					{authentication.loggedIn ? (
+						<Button
+							className={classes.buttons}
+							variant='outlined'
+							color='inherit'
+							onClick={logoutAction}
+						>
+							Log out
+						</Button>
+					) : (
+						<React.Fragment>
+							<Button
+								className={cn(classes.register, classes.buttons)}
+								variant='contained'
+								color='secondary'
+								component={Link}
+								to='/register'
+							>
+								Register
+							</Button>
+							<Button
+								className={classes.buttons}
+								variant='outlined'
+								color='inherit'
+								component={Link}
+								to='/login'
+							>
+								Log in
+							</Button>
+						</React.Fragment>
+					)}
 				</Hidden>
 			</Toolbar>
 			<Divider />
 			<Hidden smUp>
 				<Collapse in={collapsed}>
 					<Box className={classes.dropDown}>
-						<Button
-							className={cn(classes.register, classes.buttons)}
-							variant='contained'
-							color='secondary'
-							component={Link}
-							to='/register'
-						>
-							Register
-						</Button>
-						<Button
-							className={classes.buttons}
-							variant='outlined'
-							color='inherit'
-							component={Link}
-							to='/login'
-						>
-							Log in
-						</Button>
+						{authentication.loggedIn ? (
+							<Button
+								className={classes.buttons}
+								variant='outlined'
+								color='inherit'
+								onClick={() => {
+									toggleCollapse()
+									logoutAction()
+								}}
+							>
+								Log out
+							</Button>
+						) : (
+							<React.Fragment>
+								<Button
+									className={cn(classes.register, classes.buttons)}
+									variant='contained'
+									color='secondary'
+									component={Link}
+									to='/register'
+									onClick={toggleCollapse}
+								>
+									Register
+								</Button>
+								<Button
+									className={classes.buttons}
+									variant='outlined'
+									color='inherit'
+									component={Link}
+									to='/login'
+									onClick={toggleCollapse}
+								>
+									Log in
+								</Button>
+							</React.Fragment>
+						)}
 					</Box>
 				</Collapse>
 			</Hidden>
@@ -111,4 +147,19 @@ const Header = () => {
 	)
 }
 
-export default Header
+Header.propTypes = {
+	authentication: PropTypes.object,
+	logoutAction: PropTypes.func
+}
+
+const mapStateToProps = ({ authentication }) => ({ authentication })
+
+const mapDispatchToProps = dispatch =>
+	bindActionCreators(
+		{
+			logoutAction: userActions.logout
+		},
+		dispatch
+	)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)
