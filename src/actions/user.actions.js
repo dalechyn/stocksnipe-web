@@ -10,6 +10,7 @@ const login = (username, password) => {
 
 	return dispatch => {
 		dispatch(request({ username }))
+		dispatch(alertActions.clear())
 
 		usersService.login(username, password).then(
 			user => {
@@ -35,6 +36,7 @@ const getAll = () => {
 	const failure = error => ({ type: userConstants.GETALL_FAILURE, error })
 	return dispatch => {
 		dispatch(request())
+		dispatch(alertActions.clear())
 
 		usersService.getAll().then(
 			users => dispatch(success(users)),
@@ -50,10 +52,17 @@ const register = (email, username, password) => {
 
 	return dispatch => {
 		dispatch(request({ email, username, password }))
+		dispatch(alertActions.clear())
 
 		usersService.register(email, username, password).then(
-			user => dispatch(success(user)),
-			error => dispatch(failure(error))
+			user => {
+				dispatch(success(user))
+				history.push('/')
+			},
+			error => {
+				dispatch(failure(error))
+				dispatch(alertActions.error(error))
+			}
 		)
 	}
 }
