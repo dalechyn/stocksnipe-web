@@ -2,8 +2,17 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { useForm, Controller } from 'react-hook-form'
-import { TextField, Container, Button, Paper, Box, makeStyles } from '@material-ui/core'
-import { Alert } from '@material-ui/lab'
+import {
+	TextField,
+	Container,
+	Button,
+	Paper,
+	Box,
+	IconButton,
+	makeStyles
+} from '@material-ui/core'
+import { Close as CloseIcon } from '@material-ui/icons'
+import { Alert, AlertTitle } from '@material-ui/lab'
 import PropTypes from 'prop-types'
 
 import { history } from '../../../helpers'
@@ -59,7 +68,30 @@ const LoginForm = ({ className, alert, clearAlert, loginAction }) => {
 				noValidate
 				onSubmit={handleSubmit(onSubmit)}
 			>
-				{alert.message && <Alert severity={alert.type}>{alert.message}</Alert>}
+				{alert.message && (
+					<Box className={classes.formGroup}>
+						<Alert
+							variant='outlined'
+							action={
+								<IconButton
+									aria-label='close'
+									color='inherit'
+									size='small'
+									onClick={() => {
+										clearAlert()
+									}}
+								>
+									<CloseIcon fontSize='inherit' />
+								</IconButton>
+							}
+							severity={alert.type}
+						>
+							<AlertTitle>Error</AlertTitle>
+							{alert.message}
+						</Alert>
+					</Box>
+				)}
+
 				<Box className={classes.formGroup}>
 					<Controller
 						control={control}
@@ -72,6 +104,7 @@ const LoginForm = ({ className, alert, clearAlert, loginAction }) => {
 						variant='outlined'
 						error={!!errors.inputLogin}
 						helperText={errors.inputLogin && errors.inputLogin.message}
+						inputProps={{ autoComplete: 'username' }}
 						fullWidth
 					/>
 				</Box>
@@ -86,6 +119,7 @@ const LoginForm = ({ className, alert, clearAlert, loginAction }) => {
 						variant='outlined'
 						error={!!errors.inputPassword}
 						helperText={errors.inputPassword && errors.inputPassword.message}
+						inputProps={{ autoComplete: 'current-password' }}
 						fullWidth
 					/>
 				</Box>
@@ -124,7 +158,7 @@ const LoginForm = ({ className, alert, clearAlert, loginAction }) => {
 LoginForm.propTypes = {
 	className: PropTypes.string,
 	alert: PropTypes.shape({
-		message: PropTypes.object,
+		message: PropTypes.string,
 		type: PropTypes.string
 	}),
 	clearAlert: PropTypes.func,

@@ -2,14 +2,23 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { useForm, Controller } from 'react-hook-form'
-import { Box, TextField, Button, Paper, makeStyles, Container } from '@material-ui/core'
-import { MUIRouterLink, MUIPasswordField } from '../../MUIComponents'
-import { Alert } from '@material-ui/lab'
+import {
+	Box,
+	TextField,
+	Button,
+	Paper,
+	makeStyles,
+	Container,
+	IconButton
+} from '@material-ui/core'
+import { Alert, AlertTitle } from '@material-ui/lab'
+import { Close as CloseIcon } from '@material-ui/icons'
 import PropTypes from 'prop-types'
 
 import { history } from '../../../helpers'
 import { alertActions, userActions } from '../../../actions'
 import { passValidate } from '../utils'
+import { MUIRouterLink, MUIPasswordField } from '../../MUIComponents'
 
 // eslint is mad on email regexps :P
 // eslint-disable-next-line no-useless-escape
@@ -55,7 +64,29 @@ const RegisterForm = ({ className, alert, clearAlert, registerAction }) => {
 				noValidate
 				onSubmit={handleSubmit(onSubmit)}
 			>
-				{alert.message && <Alert severity={alert.type}>{alert.message}</Alert>}
+				{alert.message && (
+					<Box className={classes.formGroup}>
+						<Alert
+							variant='outlined'
+							action={
+								<IconButton
+									aria-label='close'
+									color='inherit'
+									size='small'
+									onClick={() => {
+										clearAlert()
+									}}
+								>
+									<CloseIcon fontSize='inherit' />
+								</IconButton>
+							}
+							severity={alert.type}
+						>
+							<AlertTitle>Error</AlertTitle>
+							{alert.message}
+						</Alert>
+					</Box>
+				)}
 				<Box className={classes.formGroup}>
 					<Controller
 						control={control}
@@ -70,6 +101,7 @@ const RegisterForm = ({ className, alert, clearAlert, registerAction }) => {
 						variant='outlined'
 						error={!!errors.inputEmail}
 						helperText={errors.inputEmail && errors.inputEmail.message}
+						inputProps={{ autoComplete: 'email' }}
 						fullWidth
 					/>
 				</Box>
@@ -83,6 +115,7 @@ const RegisterForm = ({ className, alert, clearAlert, registerAction }) => {
 						variant='outlined'
 						error={!!errors.inputLogin}
 						helperText={errors.inputLogin && errors.inputLogin.message}
+						inputProps={{ autoComplete: 'username' }}
 						fullWidth
 					/>
 				</Box>
@@ -96,6 +129,7 @@ const RegisterForm = ({ className, alert, clearAlert, registerAction }) => {
 						variant='outlined'
 						error={!!errors.inputPassword}
 						helperText={errors.inputPassword && errors.inputPassword.message}
+						inputProps={{ autoComplete: 'section-pass new-password' }}
 						fullWidth
 					/>
 				</Box>
@@ -114,6 +148,7 @@ const RegisterForm = ({ className, alert, clearAlert, registerAction }) => {
 						helperText={
 							errors.inputConfirmPassword && errors.inputConfirmPassword.message
 						}
+						inputProps={{ autoComplete: 'section-pass new-password' }}
 						fullWidth
 					/>
 				</Box>
@@ -138,7 +173,7 @@ const RegisterForm = ({ className, alert, clearAlert, registerAction }) => {
 RegisterForm.propTypes = {
 	className: PropTypes.string,
 	alert: PropTypes.shape({
-		message: PropTypes.object,
+		message: PropTypes.string,
 		type: PropTypes.string
 	}),
 	clearAlert: PropTypes.func,

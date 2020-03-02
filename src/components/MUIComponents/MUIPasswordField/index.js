@@ -19,7 +19,14 @@ const variantsInput = {
 }
 
 const MUIPasswordField = forwardRef(function MUIPasswordField(
-	{ helperText, variant = 'standard', label = 'Password', InputProps, ...props },
+	{
+		helperText,
+		variant = 'standard',
+		label = 'Password',
+		InputProps,
+		inputProps,
+		...props
+	},
 	ref
 ) {
 	const [showPassword, setShow] = useState(false)
@@ -43,6 +50,7 @@ const MUIPasswordField = forwardRef(function MUIPasswordField(
 					</InputAdornment>
 				}
 				label={label}
+				inputProps={inputProps}
 				{...InputProps}
 			/>
 			<FormHelperText>{helperText}</FormHelperText>
@@ -55,7 +63,8 @@ MUIPasswordField.propTypes = {
 	helperText: PropTypes.string,
 	variant: PropTypes.oneOf(['standard', 'filled', 'outlined']),
 	label: PropTypes.string,
-	InputProps: PropTypes.object
+	InputProps: PropTypes.object,
+	inputProps: PropTypes.object
 }
 
 export default MUIPasswordField
