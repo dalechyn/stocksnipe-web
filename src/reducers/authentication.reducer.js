@@ -23,8 +23,7 @@ export function authentication(state = initialState, action) {
 				user: action.user
 			}
 		case userConstants.REGISTER_SUCCESS || userConstants.REGISTER_FAILURE:
-			return {
-			}
+			return {}
 		default:
 			return state
 	}

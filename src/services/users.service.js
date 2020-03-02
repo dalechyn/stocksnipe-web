@@ -1,6 +1,9 @@
 import config from '../config/default'
 import { authHeader } from '../helpers'
 
+const reqHandler = (text, response) =>
+	response.ok ? text && JSON.parse(text) : Promise.reject(text || response.statusText)
+
 const register = (userEmail, userLogin, userPassword) => {
 	const requestOptions = {
 		method: 'POST',
@@ -11,15 +14,7 @@ const register = (userEmail, userLogin, userPassword) => {
 	}
 
 	return fetch(`${config.api.url}/users/register`, requestOptions).then(response =>
-		response
-			.text()
-			.then(text => {
-				const data = text && JSON.parse(text)
-				return response.ok
-					? data
-					: Promise.reject((data && data.message) || response.statusText)
-			})
-			.then()
+		response.text().then(text => reqHandler(text, response))
 	)
 }
 
@@ -33,24 +28,7 @@ const login = (userLogin, userPassword) => {
 	}
 
 	return fetch(`${config.api.url}/users/login`, requestOptions)
-		.then(response =>
-			response.text().then(text => {
-				const data = text && JSON.parse(text)
-				if (!response.ok) {
-					if (response.status === 401) {
-						// auto logout if 401 response returned from api
-						logout()
-						// why logout if we are not logged in
-						// location.reload(true)
-					}
-
-					const error = (data && data.message) || response.statusText
-					return Promise.reject(error)
-				}
-
-				return data
-			})
-		)
+		.then(response => response.text().then(text => reqHandler(text, response)))
 		.then(user => localStorage.setItem('user', JSON.stringify(user)))
 }
 
