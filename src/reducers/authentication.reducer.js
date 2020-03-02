@@ -15,10 +15,16 @@ export function authentication(state = initialState, action) {
 				loggedIn: true,
 				user: action.user
 			}
-		case userConstants.LOGIN_FAILURE:
+		case userConstants.LOGIN_FAILURE || userConstants.LOGOUT:
 			return {}
-		case userConstants.LOGOUT:
-			return {}
+		case userConstants.REGISTER_REQUEST:
+			return {
+				registeringIn: true,
+				user: action.user
+			}
+		case userConstants.REGISTER_SUCCESS || userConstants.REGISTER_FAILURE:
+			return {
+			}
 		default:
 			return state
 	}
