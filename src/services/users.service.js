@@ -22,7 +22,7 @@ const getTokenPair = refreshToken => {
 		response
 			.text()
 			.then(text => reqHandler(text, response))
-			.then(({ accessToken, refreshToken }) => {
+			.then((accessToken, refreshToken) => {
 				localStorage.setItem('accessToken', accessToken)
 				localStorage.setItem('refreshToken', refreshToken)
 			})

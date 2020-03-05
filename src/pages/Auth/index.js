@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const AuthPage = ({ loginPage, registerPage, authentication }) => {
+const AuthPage = ({ loginPage, registerPage, auth }) => {
 	const classes = useStyles()
 
 	return (
@@ -44,7 +44,7 @@ const AuthPage = ({ loginPage, registerPage, authentication }) => {
 			<div className={cn(classes.filler, classes.up)} />
 			{loginPage && <LoginForm className={classes.auth} />}
 			{registerPage && <RegisterForm className={classes.auth} />}
-			{authentication.loggingIn && (
+			{auth.loggingIn && (
 				<Container maxWidth='xs' disableGutters>
 					<LinearProgress className={classes.progress} />
 				</Container>
@@ -65,9 +65,9 @@ const requiredPropsCheck = (props, propName, componentName) => {
 AuthPage.propTypes = {
 	loginPage: requiredPropsCheck,
 	registerPage: requiredPropsCheck,
-	authentication: PropTypes.object
+	auth: PropTypes.object
 }
 
-const mapStateToProps = ({ authentication }) => ({ authentication })
+const mapStateToProps = ({ auth }) => ({ auth })
 
 export default connect(mapStateToProps)(AuthPage)

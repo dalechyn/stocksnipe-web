@@ -29,7 +29,7 @@ export const checkAccess = () => {
 
 	try {
 		const { exp } = decode(accessToken)
-		if (exp < new Date().getTime() / 1000) {
+		if (exp && exp < new Date().getTime() / 1000) {
 			return false
 		}
 	} catch (e) {

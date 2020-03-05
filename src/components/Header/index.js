@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }))
 
-const Header = ({ authentication, logoutAction }) => {
+const Header = ({ auth, logoutAction }) => {
 	const classes = useStyles()
 	const [collapsed, setCollapsed] = React.useState(false)
 
@@ -67,7 +67,7 @@ const Header = ({ authentication, logoutAction }) => {
 				</Hidden>
 
 				<Hidden xsDown>
-					{authentication.loggedIn ? (
+					{auth.loggedIn ? (
 						<Button
 							className={classes.buttons}
 							variant='outlined'
@@ -104,7 +104,7 @@ const Header = ({ authentication, logoutAction }) => {
 			<Hidden smUp>
 				<Collapse in={collapsed}>
 					<Box className={classes.dropDown}>
-						{authentication.loggedIn ? (
+						{auth.loggedIn ? (
 							<Button
 								className={classes.buttons}
 								variant='outlined'
@@ -148,11 +148,11 @@ const Header = ({ authentication, logoutAction }) => {
 }
 
 Header.propTypes = {
-	authentication: PropTypes.object,
+	auth: PropTypes.object,
 	logoutAction: PropTypes.func
 }
 
-const mapStateToProps = ({ authentication }) => ({ authentication })
+const mapStateToProps = ({ auth }) => ({ auth })
 
 const mapDispatchToProps = dispatch =>
 	bindActionCreators(

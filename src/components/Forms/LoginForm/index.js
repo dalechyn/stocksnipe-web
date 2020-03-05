@@ -162,8 +162,7 @@ LoginForm.propTypes = {
 		type: PropTypes.string
 	}),
 	clearAlert: PropTypes.func,
-	loginAction: PropTypes.func,
-	authentication: PropTypes.object
+	loginAction: PropTypes.func
 }
 
 const mapStateToProps = ({ alert }) => ({ alert })

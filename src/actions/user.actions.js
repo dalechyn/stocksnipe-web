@@ -4,15 +4,24 @@ import { alertActions } from './'
 import { history } from '../helpers'
 
 const getTokenPair = refreshToken => {
-	const request = refreshToken => ({ type: userConstants.TOKENS_REQUEST, refreshToken })
-	const success = tokens => ({ type: userConstants.TOKENS_SUCCESS, tokens })
+	const request = (refreshToken, tokensPromise) => ({
+		type: userConstants.TOKENS_REQUEST,
+		refreshToken,
+		tokensPromise
+	})
+	const success = (accessToken, refreshToken) => ({
+		type: userConstants.TOKENS_SUCCESS,
+		accessToken,
+		refreshToken
+	})
 	const failure = error => ({ type: userConstants.TOKENS_FAILURE, error })
 
 	return dispatch => {
-		dispatch(request(refreshToken))
+		const tokensPromise = usersService.getTokenPair(refreshToken)
+		dispatch(request(refreshToken, tokensPromise))
 
-		usersService.getTokenPair(refreshToken).then(
-			tokens => dispatch(success(tokens)),
+		tokensPromise.then(
+			(accessToken, refreshToken) => dispatch(success(accessToken, refreshToken)),
 			error => dispatch(failure(error))
 		)
 	}
