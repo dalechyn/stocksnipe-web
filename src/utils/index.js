@@ -19,16 +19,16 @@ export const createReducer = (initialState, reducerMap) => (
 
 export const parseJSON = response => response.json()
 
-export const checkAuth = () => {
-	const token = localStorage.getItem('token')
+export const checkAccess = () => {
+	const accessToken = localStorage.getItem('accessToken')
 	const refreshToken = localStorage.getItem('refreshToken')
 
-	if (!token || !refreshToken) {
+	if (!accessToken || !refreshToken) {
 		return false
 	}
 
 	try {
-		const { exp } = decode(refreshToken)
+		const { exp } = decode(accessToken)
 		if (exp < new Date().getTime() / 1000) {
 			return false
 		}

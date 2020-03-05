@@ -3,6 +3,21 @@ import { usersService } from '../services'
 import { alertActions } from './'
 import { history } from '../helpers'
 
+const getTokenPair = refreshToken => {
+	const request = refreshToken => ({ type: userConstants.TOKENS_REQUEST, refreshToken })
+	const success = tokens => ({ type: userConstants.TOKENS_SUCCESS, tokens })
+	const failure = error => ({ type: userConstants.TOKENS_FAILURE, error })
+
+	return dispatch => {
+		dispatch(request(refreshToken))
+
+		usersService.getTokenPair(refreshToken).then(
+			tokens => dispatch(success(tokens)),
+			error => dispatch(failure(error))
+		)
+	}
+}
+
 const login = (username, password) => {
 	const request = user => ({ type: userConstants.LOGIN_REQUEST, user })
 	const success = user => ({ type: userConstants.LOGIN_SUCCESS, user })
@@ -71,6 +86,7 @@ export const userActions = {
 	login,
 	logout,
 	register,
+	getTokenPair,
 
 	getAll
 }

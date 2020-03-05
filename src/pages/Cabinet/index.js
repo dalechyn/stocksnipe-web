@@ -1,5 +1,5 @@
 import React from 'react'
 
-const Cabinet = () => <></>
+const Cabinet = () => <>sdasd</>
 
 export default Cabinet
