@@ -2,27 +2,45 @@ import { userConstants } from '../constants'
 import { usersService } from '../services'
 import { alertActions } from './'
 import { history } from '../helpers'
+import { checkTokenExpired, getAccessToken, getRefreshToken } from '../utils'
 
-const getTokenPair = refreshToken => {
-	const request = (refreshToken, tokensPromise) => ({
+// Returns a promise that tries to get tokens if pr returns a response with 401 code
+// pr must return fetch response on reject
+const withTokenRefreshAttempt = (dispatch, pr, onResolve, onReject) =>
+	pr.then(onResolve, response => {
+		if (response.status === 401) {
+			const accessToken = getAccessToken()
+			const refreshToken = getRefreshToken()
+
+			if (!accessToken || !refreshToken || checkTokenExpired(refreshToken)) {
+				onReject()
+			}
+
+			if (checkTokenExpired(accessToken)) {
+				dispatch(renewTokenPair(refreshToken))
+				pr.then(onResolve, onReject)
+			}
+		}
+	})
+
+const renewTokenPair = refreshToken => {
+	const request = tokensPromise => ({
 		type: userConstants.TOKENS_REQUEST,
-		refreshToken,
 		tokensPromise
 	})
-	const success = (accessToken, refreshToken) => ({
-		type: userConstants.TOKENS_SUCCESS,
-		accessToken,
-		refreshToken
+	const success = () => ({
+		type: userConstants.TOKENS_SUCCESS
 	})
 	const failure = error => ({ type: userConstants.TOKENS_FAILURE, error })
 
-	return dispatch => {
-		const tokensPromise = usersService.getTokenPair(refreshToken)
-		dispatch(request(refreshToken, tokensPromise))
-
-		tokensPromise.then(
-			(accessToken, refreshToken) => dispatch(success(accessToken, refreshToken)),
-			error => dispatch(failure(error))
+	return async dispatch => {
+		dispatch(
+			request(
+				usersService.refreshTokenPair(refreshToken).then(
+					() => dispatch(success()),
+					error => dispatch(failure(error))
+				)
+			)
 		)
 	}
 }
@@ -32,25 +50,26 @@ const login = (username, password) => {
 	const success = user => ({ type: userConstants.LOGIN_SUCCESS, user })
 	const failure = error => ({ type: userConstants.LOGIN_FAILURE, error })
 
-	return dispatch => {
+	return async dispatch => {
 		dispatch(request({ username }))
 		dispatch(alertActions.clear())
 
-		usersService.login(username, password).then(
-			user => {
-				dispatch(success(user))
-				history.push('/')
-			},
-			error => {
-				dispatch(failure(error))
-				dispatch(alertActions.error(error))
-			}
-		)
+		try {
+			const user = await usersService.login(username, password)
+			dispatch(success(user))
+			history.push('/')
+		} catch (response) {
+			const error = response.statusText
+
+			dispatch(failure(error))
+			dispatch(alertActions.error(error))
+		}
 	}
 }
 
 const logout = () => {
 	usersService.logout()
+	history.push('/')
 	return { type: userConstants.LOGOUT }
 }
 
@@ -95,7 +114,7 @@ export const userActions = {
 	login,
 	logout,
 	register,
-	getTokenPair,
+	renewTokenPair,
 
 	getAll
 }

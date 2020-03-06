@@ -1,19 +1,5 @@
-import { useDispatch } from 'react-redux'
 import config from '../config/default'
-import { authHeader } from '../helpers'
-import {
-	getRefreshToken,
-	removeUserAndTokens,
-	setAccessToken,
-	setRefreshToken,
-	setUser
-} from '../utils'
-import { userActions } from '../actions'
-
-const makeHeaders = headers => ({
-	...headers,
-	...authHeader()
-})
+import { removeUserAndTokens, setAccessToken, setRefreshToken, setUser } from '../utils'
 
 const resHandler = response => {
 	return response.ok
@@ -25,29 +11,6 @@ const resHandler = response => {
 						: Promise.reject(new Error('JSON Body response is empty'))
 				)
 		: Promise.reject(response)
-}
-
-const fetchAuth = (
-	url,
-	reqOptions = {
-		method: 'GET'
-	}
-) => {
-	const { headers, ...restReqOptions } = reqOptions
-	const initRequest = fetch(url, { headers: makeHeaders(headers), ...restReqOptions })
-
-	return initRequest.catch(response => tokenHandler(response, initRequest))
-}
-
-const tokenHandler = (initPromise, response) => {
-	if (response.status === 401) {
-		const dispatch = useDispatch()
-		dispatch(userActions.getTokenPair)
-		return refreshTokenPair(getRefreshToken())
-			.then(initPromise)
-			.catch(response => response.statusText)
-	}
-	return response
 }
 
 const refreshTokenPair = refreshToken => {

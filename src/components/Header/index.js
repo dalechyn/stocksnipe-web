@@ -13,9 +13,12 @@ import {
 	IconButton,
 	Divider,
 	Collapse,
+	Menu,
+	MenuItem,
 	makeStyles
 } from '@material-ui/core'
-import { Menu as MenuIcon } from '@material-ui/icons'
+import { Menu as MenuIcon, AccountCircle } from '@material-ui/icons'
+import { usePopupState, bindTrigger, bindMenu } from 'material-ui-popup-state/hooks'
 import cn from 'classnames'
 import { userActions } from '../../actions'
 
@@ -43,6 +46,7 @@ const useStyles = makeStyles(theme => ({
 const Header = ({ auth, logoutAction }) => {
 	const classes = useStyles()
 	const [collapsed, setCollapsed] = React.useState(false)
+	const popUpState = usePopupState({ variant: 'popover' })
 
 	const toggleCollapse = () => setCollapsed(!collapsed)
 
@@ -51,7 +55,7 @@ const Header = ({ auth, logoutAction }) => {
 			<Toolbar>
 				{/* This should be replaced by logo */}
 				<Box className={classes.leftContent}>
-					<Typography className={classes.logo} variant='h6'>
+					<Typography component={Link} to='/' className={classes.logo} variant='h6'>
 						StockSnipe
 					</Typography>
 				</Box>
@@ -68,14 +72,43 @@ const Header = ({ auth, logoutAction }) => {
 
 				<Hidden xsDown>
 					{auth.loggedIn ? (
-						<Button
-							className={classes.buttons}
-							variant='outlined'
-							color='inherit'
-							onClick={logoutAction}
-						>
-							Log out
-						</Button>
+						<div>
+							<IconButton
+								aria-label='account of current user'
+								aria-controls='menu-appbar'
+								aria-haspopup='true'
+								{...bindTrigger(popUpState)}
+								color='inherit'
+							>
+								<AccountCircle />
+							</IconButton>
+							<Menu
+								{...bindMenu(popUpState)}
+								anchorOrigin={{
+									vertical: 'top',
+									horizontal: 'right'
+								}}
+								keepMounted
+								transformOrigin={{
+									vertical: 'top',
+									horizontal: 'right'
+								}}
+								onClose={popUpState.close}
+							>
+								<MenuItem component={Link} to='/cabinet' onClick={popUpState.close}>
+									Profile
+								</MenuItem>
+								<MenuItem onClick={popUpState.close}>My account</MenuItem>
+								<MenuItem
+									onClick={() => {
+										logoutAction()
+										popUpState.close()
+									}}
+								>
+									Logout
+								</MenuItem>
+							</Menu>
+						</div>
 					) : (
 						<React.Fragment>
 							<Button
