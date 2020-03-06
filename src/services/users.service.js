@@ -1,36 +1,32 @@
 import config from '../config/default'
 import { removeUserAndTokens, setAccessToken, setRefreshToken, setUser } from '../utils'
 
-const resHandler = response => {
-	return response.ok
-		? Promise.resolve(response)
-				.then(response => response.text())
-				.then(text =>
-					text
-						? JSON.parse(text)
-						: Promise.reject(new Error('JSON Body response is empty'))
-				)
-		: Promise.reject(response)
+const resHandler = async response => {
+	if (!response.ok) throw response
+
+	const text = await response.text()
+	if (!text) throw new Error('JSON Body response is empty')
+
+	return JSON.parse(text)
 }
 
-const refreshTokenPair = refreshToken => {
+const refreshTokenPair = async oldRefreshToken => {
 	const requestOptions = {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ refreshToken })
+		body: JSON.stringify({ refreshToken: oldRefreshToken })
 	}
 
-	return fetch(`${config.api.url}/auth/refresh`, requestOptions)
-		.then(resHandler)
-		.then(({ accessToken, refreshToken }) => {
-			setAccessToken(accessToken)
-			setRefreshToken(refreshToken)
-		})
+	const response = await fetch(`${config.api.url}/auth/refresh`, requestOptions)
+	const { accessToken, refreshToken } = await resHandler(response)
+
+	setAccessToken(accessToken)
+	setRefreshToken(refreshToken)
 }
 
-const register = (userEmail, userLogin, userPassword) => {
+const register = async (userEmail, userLogin, userPassword) => {
 	const requestOptions = {
 		method: 'POST',
 		headers: {
@@ -39,10 +35,10 @@ const register = (userEmail, userLogin, userPassword) => {
 		body: JSON.stringify({ email: userEmail, login: userLogin, password: userPassword })
 	}
 
-	return fetch(`${config.api.url}/auth/register`, requestOptions)
+	await fetch(`${config.api.url}/auth/register`, requestOptions)
 }
 
-const login = (userLogin, userPassword) => {
+const login = async (userLogin, userPassword) => {
 	const requestOptions = {
 		method: 'POST',
 		headers: {
@@ -51,28 +47,26 @@ const login = (userLogin, userPassword) => {
 		body: JSON.stringify({ login: userLogin, password: userPassword })
 	}
 
-	return fetch(`${config.api.url}/auth/login`, requestOptions)
-		.then(resHandler)
-		.then(user => {
-			console.log(user)
-			const { refreshToken, accessToken, ...rest } = user
+	const response = await fetch(`${config.api.url}/auth/login`, requestOptions)
+	const { refreshToken, accessToken, ...rest } = await resHandler(response)
 
-			setAccessToken(accessToken)
-			setRefreshToken(refreshToken)
-			setUser(JSON.stringify(rest))
-		})
+	setAccessToken(accessToken)
+	setRefreshToken(refreshToken)
+	setUser(JSON.stringify(rest))
+
+	return rest
 }
 
 const logout = () => {
 	removeUserAndTokens()
 }
 
-const getAll = () => {
+const getAll = async () => {
 	const requestOptions = {
 		method: 'GET'
 	}
 
-	return fetch(`${config.api.url}/users`, requestOptions)
+	await fetch(`${config.api.url}/users`, requestOptions)
 }
 
 export const usersService = {

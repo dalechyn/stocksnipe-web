@@ -4,7 +4,7 @@ export const token = (state = {}, action) => {
 	switch (action.type) {
 		case userConstants.TOKENS_REQUEST:
 			return {
-				tokensPromise: action.tokensPromise
+				tokensFetching: true
 			}
 		case userConstants.TOKENS_FAILURE:
 		case userConstants.TOKENS_SUCCESS:

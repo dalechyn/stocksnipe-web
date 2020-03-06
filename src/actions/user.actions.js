@@ -6,27 +6,30 @@ import { checkTokenExpired, getAccessToken, getRefreshToken } from '../utils'
 
 // Returns a promise that tries to get tokens if pr returns a response with 401 code
 // pr must return fetch response on reject
-const withTokenRefreshAttempt = (dispatch, pr, onResolve, onReject) =>
-	pr.then(onResolve, response => {
+const withTokenRefreshAttempt = async (dispatch, pr) => {
+	try {
+		return await pr
+	} catch (response) {
 		if (response.status === 401) {
 			const accessToken = getAccessToken()
 			const refreshToken = getRefreshToken()
 
 			if (!accessToken || !refreshToken || checkTokenExpired(refreshToken)) {
-				onReject()
+				throw new Error('Refresh token is expired, re-authentication needed')
 			}
 
 			if (checkTokenExpired(accessToken)) {
-				dispatch(renewTokenPair(refreshToken))
-				pr.then(onResolve, onReject)
+				await dispatch(renewTokenPair(refreshToken))
+				return await pr
 			}
 		}
-	})
+		throw response
+	}
+}
 
 const renewTokenPair = refreshToken => {
-	const request = tokensPromise => ({
-		type: userConstants.TOKENS_REQUEST,
-		tokensPromise
+	const request = () => ({
+		type: userConstants.TOKENS_REQUEST
 	})
 	const success = () => ({
 		type: userConstants.TOKENS_SUCCESS
@@ -34,14 +37,13 @@ const renewTokenPair = refreshToken => {
 	const failure = error => ({ type: userConstants.TOKENS_FAILURE, error })
 
 	return async dispatch => {
-		dispatch(
-			request(
-				usersService.refreshTokenPair(refreshToken).then(
-					() => dispatch(success()),
-					error => dispatch(failure(error))
-				)
-			)
-		)
+		try {
+			dispatch(request())
+			await usersService.refreshTokenPair(refreshToken)
+			dispatch(success())
+		} catch (e) {
+			dispatch(failure(e))
+		}
 	}
 }
 
@@ -59,6 +61,7 @@ const login = (username, password) => {
 			dispatch(success(user))
 			history.push('/')
 		} catch (response) {
+			console.log(response)
 			const error = response.statusText
 
 			dispatch(failure(error))
@@ -77,14 +80,16 @@ const getAll = () => {
 	const request = () => ({ type: userConstants.GETALL_REQUEST })
 	const success = users => ({ type: userConstants.GETALL_SUCCESS, users })
 	const failure = error => ({ type: userConstants.GETALL_FAILURE, error })
-	return dispatch => {
+	return async dispatch => {
 		dispatch(request())
 		dispatch(alertActions.clear())
 
-		usersService.getAll().then(
-			users => dispatch(success(users)),
-			error => dispatch(failure(error))
-		)
+		try {
+			const users = await usersService.getAll()
+			dispatch(success(users))
+		} catch (e) {
+			dispatch(failure(e))
+		}
 	}
 }
 
@@ -93,20 +98,18 @@ const register = (email, username, password) => {
 	const success = user => ({ type: userConstants.REGISTER_SUCCESS, user })
 	const failure = error => ({ type: userConstants.REGISTER_FAILURE, error })
 
-	return dispatch => {
+	return async dispatch => {
 		dispatch(request({ email, username, password }))
 		dispatch(alertActions.clear())
 
-		usersService.register(email, username, password).then(
-			user => {
-				dispatch(success(user))
-				history.push('/')
-			},
-			error => {
-				dispatch(failure(error))
-				dispatch(alertActions.error(error))
-			}
-		)
+		try {
+			const user = await usersService.register(email, username, password)
+			dispatch(success(user))
+			history.push('/')
+		} catch (e) {
+			dispatch(failure(e))
+			dispatch(alertActions.error(e))
+		}
 	}
 }
 
