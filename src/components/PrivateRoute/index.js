@@ -70,7 +70,7 @@ const mapStateToProps = ({ token: { tokensPromise } }) => ({ tokensPromise })
 const mapDispatchToProps = dispatch =>
 	bindActionCreators(
 		{
-			renewTokenPair: userActions.renewTokenPair,
+			renewTokenPair: userActions.requestTokenPair,
 			logout: userActions.logout
 		},
 		dispatch

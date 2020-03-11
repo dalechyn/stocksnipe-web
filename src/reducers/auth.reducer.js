@@ -7,8 +7,7 @@ export const auth = (state = initialState, action) => {
 	switch (action.type) {
 		case userConstants.LOGIN_REQUEST:
 			return {
-				loggingIn: true,
-				user: action.user
+				loggingIn: true
 			}
 		case userConstants.LOGIN_SUCCESS:
 			return {

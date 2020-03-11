@@ -1,15 +1,22 @@
 import config from '../config/default'
-import { removeUserAndTokens, setAccessToken, setRefreshToken, setUser } from '../utils'
+import {
+	payloadFetch,
+	removeUserAndTokens,
+	setAccessToken,
+	setRefreshToken,
+	setUser
+} from '../utils'
+import { history } from '../helpers'
 
-const resHandler = async response => {
+/*const resHandler = async response => {
 	if (!response.ok) throw response
 
 	const text = await response.text()
 	if (!text) throw new Error('JSON Body response is empty')
 
 	return JSON.parse(text)
-}
-
+}*/
+/*
 const refreshTokenPair = async oldRefreshToken => {
 	const requestOptions = {
 		method: 'POST',
@@ -24,9 +31,9 @@ const refreshTokenPair = async oldRefreshToken => {
 
 	setAccessToken(accessToken)
 	setRefreshToken(refreshToken)
-}
+}*/
 
-const register = async (userEmail, userLogin, userPassword) => {
+const register = (userEmail, userLogin, userPassword) => {
 	const requestOptions = {
 		method: 'POST',
 		headers: {
@@ -35,30 +42,25 @@ const register = async (userEmail, userLogin, userPassword) => {
 		body: JSON.stringify({ email: userEmail, login: userLogin, password: userPassword })
 	}
 
-	await fetch(`${config.api.url}/auth/register`, requestOptions)
+	return fetch(`${config.api.url}/auth/register`, requestOptions)
 }
 
-const login = async (userLogin, userPassword) => {
-	const requestOptions = {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ login: userLogin, password: userPassword })
-	}
+const login = dispatch => async (userLogin, userPassword) => {
+	const res = await payloadFetch(`${config.api.url}/auth/login`, {
+		login: userLogin,
+		password: userPassword
+	})
 
-	const response = await fetch(`${config.api.url}/auth/login`, requestOptions)
-	const { refreshToken, accessToken, ...rest } = await resHandler(response)
+	const { refreshToken, accessToken, ...user } = await res.json()
 
-	setAccessToken(accessToken)
 	setRefreshToken(refreshToken)
-	setUser(JSON.stringify(rest))
-
-	return rest
+	setAccessToken(accessToken)
+	setUser(JSON.stringify(user))
 }
 
 const logout = () => {
 	removeUserAndTokens()
+	history.push('/')
 }
 
 const getAll = async () => {
@@ -73,6 +75,5 @@ export const usersService = {
 	register,
 	login,
 	logout,
-	refreshTokenPair,
 	getAll
 }

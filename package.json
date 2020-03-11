@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^7.2.1",
     "babel-eslint": "^10.0.3",
     "classnames": "^2.2.6",
+    "dotenv": "^8.2.0",
     "history": "^4.10.1",
     "jwt-decode": "^2.2.0",
     "material-ui-popup-state": "^1.5.3",

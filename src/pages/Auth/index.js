@@ -1,5 +1,6 @@
 import React from 'react'
 import { Container, LinearProgress, makeStyles } from '@material-ui/core'
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
@@ -39,7 +40,9 @@ const useStyles = makeStyles(theme => ({
 const AuthPage = ({ loginPage, registerPage, auth }) => {
 	const classes = useStyles()
 
-	return (
+	return auth.loggedIn ? (
+		<Redirect to='/' />
+	) : (
 		<Container className={classes.root}>
 			<div className={cn(classes.filler, classes.up)} />
 			{loginPage && <LoginForm className={classes.auth} />}
