@@ -14,15 +14,12 @@ export const auth = (state = initialState, action) => {
 				loggedIn: true,
 				user: action.user
 			}
-		case userConstants.LOGIN_FAILURE:
-			return {}
-		case userConstants.LOGOUT:
-			return {}
 		case userConstants.REGISTER_REQUEST:
 			return {
-				registeringIn: true,
-				user: action.user
+				registeringIn: true
 			}
+		case userConstants.LOGIN_FAILURE:
+		case userConstants.LOGOUT:
 		case userConstants.REGISTER_SUCCESS:
 		case userConstants.REGISTER_FAILURE:
 			return {}

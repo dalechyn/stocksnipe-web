@@ -1,29 +1,29 @@
-import { userConstants } from '../constants'
-import config from '../config/default'
+import { tokensConstants } from '../constants'
+import { tokensActions } from '../actions/tokens.actions'
 
 export const handle401Middleware = ({ dispatch, getState }) => next => async action => {
-	// only worry about expiring token for async actions
-	const { responseError } = action
-	if (!responseError || responseError.status !== 401) return next(action)
+	const { responseError, tokensRefreshed, type } = action
+	if (
+		type === tokensConstants.TOKENS_REQUEST || // we don't retry token request
+		tokensRefreshed || // if tokens just refreshed don't fall in refresh loop
+		!responseError || // if isn't a request error
+		responseError.status !== 401
+	)
+		return next(action)
 
 	const {
-		tokens: { tokensPromise, refreshToken }
+		tokens: { tokensRefreshing, refreshToken }
 	} = getState()
 
-	if (!tokensPromise) {
-		dispatch({
-			type: userConstants.TOKENS_REQUEST,
-			refreshTokensPromise: fetch(`${config.api.url}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ refreshToken })
-			})
-		})
-	} else {
-		await tokensPromise
+	// refresh tokens only once
+	if (!tokensRefreshing) {
+		// renew tokens
+		await dispatch(tokensActions.getNewTokens(refreshToken))
 	}
 
-	return next(action)
+	// retry request
+	dispatch({
+		...action.requestPayload,
+		tokensRefreshed: true
+	})
 }

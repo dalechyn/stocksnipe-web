@@ -4,7 +4,6 @@ import Home from '../Home'
 import AuthPage from '../Auth'
 import { checkAccess } from '../../utils'
 import Cabinet from '../Cabinet'
-import PrivateRoute from '../../components/PrivateRoute'
 
 const Main = () => (
 	<main>
@@ -22,7 +21,7 @@ const Main = () => (
 					checkAccess() ? <Redirect to='/cabinet' /> : <AuthPage registerPage />
 				}
 			/>
-			<PrivateRoute path='/cabinet' component={Cabinet} />
+			<Route path='/cabinet' component={Cabinet} />
 		</Switch>
 	</main>
 )

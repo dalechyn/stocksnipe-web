@@ -1,5 +1,4 @@
 import decode from 'jwt-decode'
-import { authHeader } from '../helpers'
 
 export const createConstants = (...constants) => {
 	let i = 0
@@ -54,26 +53,31 @@ export const checkAccess = () => {
 	return !checkTokenExpired(accessToken)
 }
 
-const makeHeaders = headers => ({
-	...headers,
-	...authHeader()
-})
-
 export const removeUserAndTokens = () => {
 	localStorage.removeItem('accessToken')
 	localStorage.removeItem('refreshToken')
 	localStorage.removeItem('user')
 }
 
-export const payloadFetch = async (url, payload) => {
+export const payloadFetch = async (url, payload = {}, needsAccessToken = false) => {
 	const res = await fetch(url, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify(payload)
+		body: JSON.stringify(
+			needsAccessToken
+				? {
+						...payload,
+						accessToken: getAccessToken()
+				  }
+				: payload
+		)
 	})
 	if (!res.ok) throw res
 
 	return res
 }
+
+export const badPayloadError = (expected, got) =>
+	new Error(`Bad payload passed. Expected { ${expected}, but got ${got}`)

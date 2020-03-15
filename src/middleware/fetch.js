@@ -1,5 +1,5 @@
 export const callApiMiddleware = ({ dispatch, getState }) => next => async action => {
-	const { types, callAPI, shouldCallAPI = () => true, payload = {} } = action
+	const { types, callAPI, shouldCallAPI = () => true, payload = {}, ...rest } = action
 
 	if (!types)
 		// Normal action: pass it on
@@ -24,17 +24,26 @@ export const callApiMiddleware = ({ dispatch, getState }) => next => async actio
 	})
 
 	try {
+		const res = await callAPI(payload)
 		dispatch({
 			type: successType,
-			...payload,
-			response: await callAPI(payload)
+			requestPayload: {
+				types,
+				payload
+			},
+			response: res ? await res.json() : res,
+			...rest
 		})
 	} catch (responseError) {
 		dispatch({
 			type: failureType,
-			...payload,
-			callAPI,
-			responseError
+			requestPayload: {
+				types,
+				payload,
+				callAPI
+			},
+			responseError,
+			...rest
 		})
 	}
 }
