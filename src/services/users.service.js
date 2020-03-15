@@ -31,7 +31,6 @@ const login = async (login, password) => {
 
 const logout = () => {
 	removeUserAndTokens()
-	history.push('/')
 }
 
 export const usersService = {

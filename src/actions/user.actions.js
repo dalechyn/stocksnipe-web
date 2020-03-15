@@ -30,8 +30,12 @@ const login = (login, password) => async dispatch => {
 }
 
 const logout = () => {
-	usersService.logout()
 	history.push('/')
+	return logoutWithoutRedirect()
+}
+
+const logoutWithoutRedirect = () => {
+	usersService.logout()
 	return { type: userConstants.LOGOUT }
 }
 
@@ -56,6 +60,7 @@ const register = (email, login, password) => async dispatch => {
 export const userActions = {
 	login,
 	logout,
+	logoutWithoutRedirect,
 	register,
 	requestTokenPair
 }

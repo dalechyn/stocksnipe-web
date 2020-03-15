@@ -10,10 +10,14 @@ const Cabinet = ({ cabinetLoad, alert, failedToLoad, tokensRefreshFailed, logout
 		cabinetLoad()
 	}, [])
 
-	if (tokensRefreshFailed || failedToLoad) {
-		logout()
-		return <Redirect to='/login' />
-	}
+	useEffect(() => {
+		if (tokensRefreshFailed || failedToLoad) {
+			logout()
+		}
+	}, [tokensRefreshFailed, failedToLoad])
+
+	if (tokensRefreshFailed || failedToLoad) return <Redirect to='/login' />
+
 	return alert.message ? alert.message : <>No alert</>
 }
 
@@ -40,7 +44,10 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = dispatch =>
 	bindActionCreators(
-		{ cabinetLoad: cabinetActions.cabinetLoad, logout: userActions.logout },
+		{
+			cabinetLoad: cabinetActions.cabinetLoad,
+			logout: userActions.logoutWithoutRedirect
+		},
 		dispatch
 	)
 
