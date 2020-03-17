@@ -3,7 +3,7 @@ import { cabinetService } from '../services/cabinet.service'
 import { alertActions } from './'
 import { fetchWithRetry } from '../utils'
 
-const cabinetLoad = () => async dispatch => {
+const load = () => async dispatch => {
 	const request = () => ({ type: cabinetConstants.CABINET_REQUEST })
 	const success = () => ({ type: cabinetConstants.CABINET_SUCCESS })
 	const failure = () => ({ type: cabinetConstants.CABINET_FAILURE })
@@ -19,6 +19,11 @@ const cabinetLoad = () => async dispatch => {
 	}
 }
 
+const clear = () => ({
+	type: cabinetConstants.CABINET_CLEAR
+})
+
 export const cabinetActions = {
-	cabinetLoad
+	load,
+	clear
 }

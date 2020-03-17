@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense } from 'react'
+import React, { Suspense } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
@@ -20,49 +20,39 @@ const mapStateToProps = ({
 const mapDispatchToProps = dispatch =>
 	bindActionCreators(
 		{
-			cabinetLoad: cabinetActions.cabinetLoad,
+			cabinetLoad: cabinetActions.load,
 			logout: userActions.logoutWithoutRedirect,
 			loadCabinet: api.loadCabinet
 		},
 		dispatch
 	)
 
-function Cabinet({ resource }) {
+const Cabinet = ({ resource }) => {
 	resource.read()
 	return <h1>cabinet</h1>
 }
 
-const CabinetPage = ({
-	alert,
-	failedToLoad,
-	tokensRefreshFailed,
-	logout,
-	loadCabinet
-}) => {
-	/* useEffect(() => {
-		if (tokensRefreshFailed || failedToLoad) {
-			logout()
-		}
-	}, [tokensRefreshFailed, failedToLoad]) */
+Cabinet.propTypes = {
+	resource: PropTypes.shape({
+		read: PropTypes.func
+	})
+}
 
+const CabinetPage = ({ failedToLoad, tokensRefreshFailed, logout, loadCabinet }) => {
 	if (tokensRefreshFailed || failedToLoad) {
 		logout()
 		return <Redirect to='/login' />
 	}
 
 	return (
-		/* alert.message ? alert.message : */ <Suspense fallback={<CircularProgress />}>
+		<Suspense fallback={<CircularProgress />}>
 			<Cabinet resource={loadCabinet()} />
 		</Suspense>
 	)
 }
 
 CabinetPage.propTypes = {
-	cabinetLoad: PropTypes.func,
-	alert: PropTypes.shape({
-		message: PropTypes.string,
-		type: PropTypes.string
-	}),
+	loadCabinet: PropTypes.func,
 	failedToLoad: PropTypes.bool,
 	tokensRefreshFailed: PropTypes.bool,
 	logout: PropTypes.func

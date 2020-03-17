@@ -1,4 +1,4 @@
-import { cabinetActions } from '../../actions'
+import { cabinetActions, tokensActions } from '../../actions'
 import { reactConstants } from '../../constants/react.constants'
 
 const wrapAsyncAction = asyncAction => actionArgs => (dispatch, getState) => {
@@ -20,21 +20,21 @@ const wrapAsyncAction = asyncAction => actionArgs => (dispatch, getState) => {
 
 	return {
 		read() {
-			const {
-				react: { status, suspender, result }
-			} = getState()
-			switch (status) {
+			const { react: state } = getState()
+			switch (state.status) {
 				case reactConstants.FETCH_PENDING:
-					throw suspender
+					throw state.suspender
 				case reactConstants.FETCH_SUCCESS:
-					return result
+					return state.result
 				case reactConstants.FETCH_FAILURE:
 					throw error
+				default:
+					return state
 			}
 		}
 	}
 }
 
 export const api = {
-	loadCabinet: wrapAsyncAction(cabinetActions.cabinetLoad)
+	loadCabinet: wrapAsyncAction(cabinetActions.load)
 }

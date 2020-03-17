@@ -26,6 +26,11 @@ const getNewTokens = refreshToken => async dispatch => {
 	}
 }
 
+const clear = () => ({
+	type: tokensConstants.TOKENS_CLEAR
+})
+
 export const tokensActions = {
-	getNewTokens
+	getNewTokens,
+	clear
 }

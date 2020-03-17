@@ -54,11 +54,6 @@ const LoginForm = ({ className, alert, clearAlert, loginAction }) => {
 	const onSubmit = ({ inputLogin, inputPassword }) =>
 		loginAction(inputLogin, inputPassword)
 
-	history.listen(() => {
-		// clear alert on location change
-		clearAlert()
-	})
-
 	return (
 		<Container component={Paper} className={className} disableGutters maxWidth='xs'>
 			<Container

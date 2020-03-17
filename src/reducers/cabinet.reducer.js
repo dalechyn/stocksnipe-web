@@ -9,6 +9,8 @@ export const cabinet = (state = {}, action) => {
 			return {
 				failedToLoad: true
 			}
+		case cabinetConstants.CABINET_CLEAR:
+			return {}
 		default:
 			return state
 	}

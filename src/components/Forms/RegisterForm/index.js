@@ -51,11 +51,6 @@ const RegisterForm = ({ className, alert, clearAlert, registerAction }) => {
 	const onSubmit = ({ inputEmail, inputLogin, inputPassword }) =>
 		registerAction(inputEmail, inputLogin, inputPassword)
 
-	history.listen(() => {
-		// clear alert on location change
-		clearAlert()
-	})
-
 	return (
 		<Container component={Paper} className={className} disableGutters maxWidth='xs'>
 			<Container
