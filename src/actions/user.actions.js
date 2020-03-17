@@ -1,6 +1,6 @@
 import { tokensConstants, userConstants } from '../constants'
 import { usersService } from '../services'
-import { alertActions, cabinetActions, tokensActions } from './'
+import { alertActions } from './'
 import { history } from '../helpers'
 
 const requestTokenPair = () => ({
@@ -34,12 +34,9 @@ const logout = () => {
 	return logoutWithoutRedirect()
 }
 
-const logoutWithoutRedirect = () => dispatch => {
-	dispatch(tokensActions.clear())
-	dispatch(cabinetActions.clear())
-
+const logoutWithoutRedirect = () => {
 	usersService.logout()
-	dispatch({ type: userConstants.LOGOUT })
+	return { type: userConstants.LOGOUT }
 }
 
 const register = (email, login, password) => async dispatch => {

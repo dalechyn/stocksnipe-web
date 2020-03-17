@@ -1,4 +1,4 @@
-import { cabinetActions, tokensActions } from '../../actions'
+import { cabinetActions } from '../../actions'
 import { reactConstants } from '../../constants/react.constants'
 
 const wrapAsyncAction = asyncAction => actionArgs => (dispatch, getState) => {
