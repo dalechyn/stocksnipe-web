@@ -18,9 +18,11 @@ const getNewTokens = refreshToken => async dispatch => {
 	dispatch(request(refreshToken))
 	try {
 		await dispatch(success())
+		return true
 	} catch (err) {
 		dispatch(failure())
 		dispatch(alertActions.error(err.statusText))
+		return false
 	}
 }
 

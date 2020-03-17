@@ -1,4 +1,5 @@
 import decode from 'jwt-decode'
+import { tokensActions } from '../actions'
 
 export const createConstants = (...constants) => {
 	let i = 0
@@ -9,12 +10,16 @@ export const createConstants = (...constants) => {
 	}, {})
 }
 
-export const createReducer = (initialState, reducerMap) => (
-	state = initialState,
-	action
-) => {
-	const reducer = reducerMap[action.type]
-	return reducer ? reducer(state, action.payload) : state
+export const createReducer = (reducer, initState = {}) => {
+	let state = initState
+	return {
+		dispatch(action) {
+			state = reducer(state, action)
+		},
+		getState() {
+			return state
+		}
+	}
 }
 
 export const parseJSON = response => response.json()
@@ -81,3 +86,18 @@ export const payloadFetch = async (url, payload = {}, needsAccessToken = false) 
 
 export const badPayloadError = (expected, got) =>
 	new Error(`Bad payload passed. Expected { ${expected}, but got ${got}`)
+
+export const fetchWithRetry = promiseThunk => async (dispatch, getState) => {
+	const {
+		tokens: { refreshToken }
+	} = getState()
+	try {
+		await promiseThunk()
+	} catch (e) {
+		if (e.status === 401) {
+			const refreshed = await dispatch(tokensActions.getNewTokens(refreshToken))
+			// checking if refresh failed
+			if (refreshed) await promiseThunk()
+		} else throw e
+	}
+}

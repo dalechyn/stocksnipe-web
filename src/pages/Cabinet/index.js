@@ -1,36 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { userActions, cabinetActions } from '../../actions'
-
-const Cabinet = ({ cabinetLoad, alert, failedToLoad, tokensRefreshFailed, logout }) => {
-	useEffect(() => {
-		cabinetLoad()
-	}, [])
-
-	useEffect(() => {
-		if (tokensRefreshFailed || failedToLoad) {
-			logout()
-		}
-	}, [tokensRefreshFailed, failedToLoad])
-
-	if (tokensRefreshFailed || failedToLoad) return <Redirect to='/login' />
-
-	return alert.message ? alert.message : <>No alert</>
-}
-
-Cabinet.propTypes = {
-	cabinetLoad: PropTypes.func,
-	alert: PropTypes.shape({
-		message: PropTypes.string,
-		type: PropTypes.string
-	}),
-	failedToLoad: PropTypes.bool,
-	tokensRefreshFailed: PropTypes.bool,
-	logout: PropTypes.func
-}
+import { CircularProgress } from '@material-ui/core'
+import { api } from './api'
 
 const mapStateToProps = ({
 	alert,
@@ -46,9 +21,51 @@ const mapDispatchToProps = dispatch =>
 	bindActionCreators(
 		{
 			cabinetLoad: cabinetActions.cabinetLoad,
-			logout: userActions.logoutWithoutRedirect
+			logout: userActions.logoutWithoutRedirect,
+			loadCabinet: api.loadCabinet
 		},
 		dispatch
 	)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Cabinet)
+function Cabinet({ resource }) {
+	resource.read()
+	return <h1>cabinet</h1>
+}
+
+const CabinetPage = ({
+	alert,
+	failedToLoad,
+	tokensRefreshFailed,
+	logout,
+	loadCabinet
+}) => {
+	/* useEffect(() => {
+		if (tokensRefreshFailed || failedToLoad) {
+			logout()
+		}
+	}, [tokensRefreshFailed, failedToLoad]) */
+
+	if (tokensRefreshFailed || failedToLoad) {
+		logout()
+		return <Redirect to='/login' />
+	}
+
+	return (
+		/* alert.message ? alert.message : */ <Suspense fallback={<CircularProgress />}>
+			<Cabinet resource={loadCabinet()} />
+		</Suspense>
+	)
+}
+
+CabinetPage.propTypes = {
+	cabinetLoad: PropTypes.func,
+	alert: PropTypes.shape({
+		message: PropTypes.string,
+		type: PropTypes.string
+	}),
+	failedToLoad: PropTypes.bool,
+	tokensRefreshFailed: PropTypes.bool,
+	logout: PropTypes.func
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CabinetPage)
