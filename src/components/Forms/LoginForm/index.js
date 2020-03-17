@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { useForm, Controller } from 'react-hook-form'
@@ -15,7 +15,6 @@ import { Close as CloseIcon } from '@material-ui/icons'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import PropTypes from 'prop-types'
 
-import { history } from '../../../helpers'
 import { MUIRouterLink, MUIPasswordField, MUILabeledCheckbox } from '../../MUIComponents'
 import { alertActions, userActions } from '../../../actions'
 
@@ -42,6 +41,10 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const LoginForm = ({ className, alert, clearAlert, loginAction }) => {
+	useEffect(() => {
+		clearAlert()
+	}, [])
+
 	const classes = useStyles()
 	const { handleSubmit, control, errors } = useForm({
 		defaultValues: {
