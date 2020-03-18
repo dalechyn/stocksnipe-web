@@ -6,11 +6,9 @@ import {
 	setRefreshToken,
 	setUser
 } from '../utils'
-import { history } from '../helpers'
 
 const register = async (email, login, password) => {
 	await payloadFetch(`${config.api.url}/auth/register`, { email, login, password })
-	history.push('/')
 }
 
 const login = async (login, password) => {

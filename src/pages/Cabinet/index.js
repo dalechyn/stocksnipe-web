@@ -1,7 +1,6 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { userActions, cabinetActions, tokensActions, alertActions } from '../../actions'
 import { api } from './api'
@@ -30,21 +29,17 @@ const CabinetPage = ({
 	clearCabinet,
 	clearAlert
 }) => {
-	if ((tokensRefreshFailed || failedToLoad) && !alert.message) {
-		clearCabinet()
-		clearTokens()
-		logout()
-		return <Redirect to='/login' />
-	}
-
 	return (
 		<Suspense fallback={<MUIBackdropProgress />}>
-			{alert.message ? (
+			{alert.message && (failedToLoad || tokensRefreshFailed) ? (
 				<MUIAlertDialog
 					title={alert.message}
 					text={errorText}
 					onClose={() => {
 						clearAlert()
+						clearCabinet()
+						clearTokens()
+						logout()
 					}}
 				/>
 			) : (
@@ -82,7 +77,7 @@ const mapDispatchToProps = dispatch =>
 	bindActionCreators(
 		{
 			cabinetLoad: cabinetActions.load,
-			logout: userActions.logoutWithoutRedirect,
+			logout: userActions.logout,
 			loadCabinet: api.loadCabinet,
 			clearCabinet: cabinetActions.clear,
 			clearTokens: tokensActions.clear,

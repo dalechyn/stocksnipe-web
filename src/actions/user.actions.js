@@ -1,7 +1,8 @@
+import { push } from 'connected-react-router'
+
 import { tokensConstants, userConstants } from '../constants'
 import { usersService } from '../services'
 import { alertActions } from './'
-import { history } from '../helpers'
 
 const requestTokenPair = () => ({
 	type: userConstants.REFRESH_TOKENS
@@ -23,15 +24,16 @@ const login = (login, password) => async dispatch => {
 			accessToken
 		})
 		dispatch(alertActions.clear())
+		dispatch(push('/'))
 	} catch (err) {
 		dispatch(failure())
 		dispatch(alertActions.error(err.statusText))
 	}
 }
 
-const logout = () => {
-	history.push('/')
-	return logoutWithoutRedirect()
+const logout = () => dispatch => {
+	dispatch(logoutWithoutRedirect())
+	dispatch(push('/'))
 }
 
 const logoutWithoutRedirect = () => {
@@ -51,6 +53,7 @@ const register = (email, login, password) => async dispatch => {
 		dispatch(request())
 		await dispatch(success())
 		dispatch(alertActions.clear())
+		dispatch(push('/'))
 	} catch (err) {
 		dispatch(failure())
 		dispatch(alertActions.error(err.statusText))

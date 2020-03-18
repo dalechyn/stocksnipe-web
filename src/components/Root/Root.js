@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Provider } from 'react-redux'
-import { Router } from 'react-router-dom'
+import { ConnectedRouter } from 'connected-react-router'
 import {
 	ThemeProvider,
 	CssBaseline,
@@ -11,9 +11,8 @@ import PropTypes from 'prop-types'
 
 import Header from '../Header'
 import Main from '../../pages/Main'
-import { history } from '../../helpers'
 
-const Root = props => {
+const Root = ({ store, history }) => {
 	const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
 
 	const theme = useMemo(
@@ -27,20 +26,21 @@ const Root = props => {
 	)
 
 	return (
-		<Provider store={props.store}>
+		<Provider store={store}>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
-				<Router history={history}>
+				<ConnectedRouter history={history}>
 					<Header />
 					<Main />
-				</Router>
+				</ConnectedRouter>
 			</ThemeProvider>
 		</Provider>
 	)
 }
 
 Root.propTypes = {
-	store: PropTypes.object.isRequired
+	store: PropTypes.object.isRequired,
+	history: PropTypes.object.isRequired
 }
 
 export default Root

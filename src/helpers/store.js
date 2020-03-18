@@ -1,6 +1,14 @@
 import { createStore } from 'redux'
-import rootReducer from '../reducers'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import middleware from '../middleware'
+import rootReducer from '../reducers'
+import createMiddleware from '../middleware'
+import { createBrowserHistory } from 'history'
 
-export const store = createStore(rootReducer, composeWithDevTools(middleware))
+export const history = createBrowserHistory()
+
+export const configureStore = preloadedState =>
+	createStore(
+		rootReducer(history),
+		preloadedState,
+		composeWithDevTools(createMiddleware(history))
+	)
