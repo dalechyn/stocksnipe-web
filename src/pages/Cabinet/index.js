@@ -4,9 +4,8 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { userActions, cabinetActions, tokensActions, alertActions } from '../../actions'
-import { CircularProgress } from '@material-ui/core'
 import { api } from './api'
-import { MUIAlertDialog } from '../../components/MUIComponents'
+import { MUIAlertDialog, MUIBackdropProgress } from '../../components/MUIComponents'
 
 const Cabinet = ({ resource }) => {
 	resource.read()
@@ -39,7 +38,7 @@ const CabinetPage = ({
 	}
 
 	return (
-		<Suspense fallback={<CircularProgress />}>
+		<Suspense fallback={<MUIBackdropProgress />}>
 			{alert.message ? (
 				<MUIAlertDialog
 					title={alert.message}
