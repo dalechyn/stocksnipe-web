@@ -131,7 +131,14 @@ const LoginForm = ({ className, alert, clearAlert, loginAction }) => {
 					/>
 				</Box>
 				<Box className={classes.formGroup}>
-					<Button type='submit' size='large' variant='outlined' color='primary' fullWidth>
+					<Button
+						type='submit'
+						size='large'
+						variant='outlined'
+						color='primary'
+						fullWidth
+						autoFocus
+					>
 						LOG IN
 					</Button>
 				</Box>

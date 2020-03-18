@@ -151,7 +151,14 @@ const RegisterForm = ({ className, alert, clearAlert, registerAction }) => {
 					/>
 				</Box>
 				<Box className={classes.formGroup}>
-					<Button type='submit' size='large' variant='outlined' color='primary' fullWidth>
+					<Button
+						type='submit'
+						size='large'
+						variant='outlined'
+						color='primary'
+						fullWidth
+						autoFocus
+					>
 						Register
 					</Button>
 				</Box>
