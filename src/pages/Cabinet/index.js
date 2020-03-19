@@ -1,9 +1,10 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { wrapAsyncAction } from 'react-redux-fetcher'
+import { push } from 'connected-react-router'
 import PropTypes from 'prop-types'
 import { userActions, cabinetActions, tokensActions, alertActions } from '../../actions'
-import { api } from './api'
 import { MUIAlertDialog, MUIBackdropProgress } from '../../components/MUIComponents'
 
 const Cabinet = ({ resource }) => {
@@ -24,30 +25,30 @@ const CabinetPage = ({
 	failedToLoad,
 	tokensRefreshFailed,
 	logout,
+	push,
 	loadCabinet,
 	clearTokens,
 	clearCabinet,
 	clearAlert
-}) => {
-	return (
-		<Suspense fallback={<MUIBackdropProgress />}>
-			{alert.message && (failedToLoad || tokensRefreshFailed) ? (
-				<MUIAlertDialog
-					title={alert.message}
-					text={errorText}
-					onClose={() => {
-						clearAlert()
-						clearCabinet()
-						clearTokens()
-						logout()
-					}}
-				/>
-			) : (
-				<Cabinet resource={loadCabinet()} />
-			)}
-		</Suspense>
-	)
-}
+}) => (
+	<Suspense fallback={<MUIBackdropProgress />}>
+		{alert.message && (failedToLoad || tokensRefreshFailed) ? (
+			<MUIAlertDialog
+				title={alert.message}
+				text={errorText}
+				onClose={() => {
+					clearAlert()
+					clearCabinet()
+					clearTokens()
+					logout()
+                    push('/login')
+				}}
+			/>
+		) : (
+			<Cabinet resource={loadCabinet()} />
+		)}
+	</Suspense>
+)
 
 CabinetPage.propTypes = {
 	alert: PropTypes.shape({
@@ -58,6 +59,7 @@ CabinetPage.propTypes = {
 	failedToLoad: PropTypes.bool,
 	tokensRefreshFailed: PropTypes.bool,
 	logout: PropTypes.func,
+	push: PropTypes.func,
 	clearTokens: PropTypes.func,
 	clearCabinet: PropTypes.func,
 	clearAlert: PropTypes.func
@@ -76,12 +78,12 @@ const mapStateToProps = ({
 const mapDispatchToProps = dispatch =>
 	bindActionCreators(
 		{
-			cabinetLoad: cabinetActions.load,
-			logout: userActions.logout,
-			loadCabinet: api.loadCabinet,
+			logout: userActions.logoutWithoutRedirect,
+			loadCabinet: wrapAsyncAction(cabinetActions.load),
 			clearCabinet: cabinetActions.clear,
 			clearTokens: tokensActions.clear,
-			clearAlert: alertActions.clear
+			clearAlert: alertActions.clear,
+			push
 		},
 		dispatch
 	)
