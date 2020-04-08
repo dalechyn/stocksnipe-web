@@ -11,6 +11,7 @@ import {
 	IconButton
 } from '@material-ui/core'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
+import ToggleIcon from 'material-ui-toggle-icon'
 
 const variantsInput = {
 	standard: Input,
@@ -45,7 +46,11 @@ const MUIPasswordField = forwardRef(function MUIPasswordField(
 							onMouseDown={event => event.preventDefault()}
 							edge='end'
 						>
-							{showPassword ? <Visibility /> : <VisibilityOff />}
+							<ToggleIcon
+								on={showPassword}
+								onIcon={<Visibility />}
+								offIcon={<VisibilityOff />}
+							/>
 						</IconButton>
 					</InputAdornment>
 				}
